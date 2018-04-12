@@ -13,4 +13,7 @@ router.get('/signup', function (req, res){
 router.get('/findrestaurant', function (req, res) {
     res.render('findRestaurant.ejs');
 });
+router.get('/restaurant', function (req, res) {
+    res.render('restaurant.ejs');
+});
 module.exports = router;
