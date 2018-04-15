@@ -5,6 +5,7 @@
     <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
     <meta charset="utf-8">
 	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 	<style>
 		@import url('https://fonts.googleapis.com/css?family=Dancing+Script');
 		@import url('https://fonts.googleapis.com/css?family=Bitter');
@@ -43,7 +44,7 @@
 			height: 100%;
 			margin: 0;
 			padding: 0;
-			overflow:hidden;
+			overflow-x:hidden;
 			color:white;
 		}
 		html
@@ -60,6 +61,26 @@
 			background-color:white;
 			color:#dd1021;
 		}
+		.rating
+		{
+			background-color:#0375B4;
+			border-width:2px;
+			border-style:solid;
+			width:80%;
+		}
+		.checked
+		{
+			color:orange;
+			font-size:2em;
+			cursor:pointer;
+		}
+		.unchecked
+		{
+			color:black;
+			font-size:2em;
+			pointer:cursor;
+			cursor:pointer;
+		}
 	</style>
    	<script
 			  src="https://code.jquery.com/jquery-3.3.1.js"
@@ -69,19 +90,14 @@
       var map;
       var infowindow;
       function initMap() {
-        var pyrmont = {lat: 42.375, lng: -71.1};
+        var pyrmont = {lat: <%= restaurant.lat %>, lng: <%= restaurant.lng %>};
         map = new google.maps.Map(document.getElementById('map'), {
           center: pyrmont,
           zoom: 15
         });
 
         infowindow = new google.maps.InfoWindow();
-		
-		/*$.getJSON('/api/getallshops',(data)=>{
-			data.forEach(function(element){
-				createMarker({lat:parseFloat(element.lat),lng:parseFloat(element.lon)},element.name);
-			});
-		});*/
+		createMarker({lat : <%= restaurant.lat %>,lng : <%= restaurant.lng %>},null);
 
 	  }
 	  
@@ -91,14 +107,40 @@
           map: map,
           position: location
         });
-        google.maps.event.addListener(marker, 'click', function() {
-          infowindow.setContent(name);
-          infowindow.open(map, this);
-        });
       }
     </script>
   </head>
   <body>
+
+
+  <div class="modal fade" id="rate" role="dialog">
+		<div class="modal-dialog">
+		  <div class="modal-content">
+			<div class="modal-header">
+			  <button type="button" class="close" data-dismiss="modal">&times;</button>
+			  <h4 style="color:red;"></span>Rate your Experience</h4>
+			</div>
+			<div class="modal-body">
+				<form action="/rate" method="post">
+					<div class="form-group">
+					  <label for="comment"><span class="glyphicon glyphicon-user"></span>Comment : </label>
+					  <input type="text" class="form-control" id="username" placeholder="Enter Comment" name="comment">
+					</div>
+					<span class="fa fa-star checked stars-1" onclick="setRating(1)" ></span>
+					<span class="fa fa-star checked stars-2" onclick="setRating(2)" ></span>
+					<span class="fa fa-star checked stars-3" onclick="setRating(3)" ></span>
+					<span class="fa fa-star unchecked stars-4" onclick="setRating(4)" ></span>
+					<span class="fa fa-star unchecked stars-5" onclick="setRating(5)" ></span>
+					<input type = "hidden" value= "3" class="rating-input-hidden" name="rating" / >
+					<input type = "hidden" value = "<%= restaurant['_id'] %>" name="idrestaurant" />
+					<button type="submit" class="btn btn-default btn-success btn-block">Rate</button>
+				</form>
+			</div>
+		  </div>
+		</div>
+	</div>
+
+
 	<div class="modal fade" id="myModal" role="dialog">
 		<div class="modal-dialog">
 		  <div class="modal-content">
@@ -114,7 +156,7 @@
 				</div>
 				<div class="form-group">
 				  <label for="password"><span class="glyphicon glyphicon-eye-open"></span>Password</label>
-				  <input type="text" class="form-control" id="password" placeholder="Enter Password" name="password">
+				  <input type="password" class="form-control" id="password" placeholder="Enter Password" name="password">
 				</div>
 				<button type="submit" class="btn btn-default btn-success btn-block"><span class="glyphicon glyphicon-off"></span> Login </button>
 			  </form>
@@ -133,41 +175,24 @@
 		  <div class="modal-content">
 			<div class="modal-header">
 			  <button type="button" class="close" data-dismiss="modal">&times;</button>
-			  <h4 style="color:red;">Menu</h4>
+			  
+			</div>
+			<div class="modal-body">
+				<h4 style="color:red;">Menu</h4>
 			  <table class="table table-responsive" style="color:black">
+				
 				<tr>
 					<th>Item</th>
 					<th>Price</th>
 				</tr>
-				<tr>
-					<td>item 1 </td>
-					<td>200 INR</td>
-				</tr>
-				<tr>
-					<td>item 2 </td>
-					<td>200 INR</td>
-				</tr>
-				<tr>
-					<td>item 3 </td>
-					<td>220 INR</td>
-				</tr>
-				<tr>
-					<td>item 4 </td>
-					<td>120 INR</td>
-				</tr>
-				<tr>
-					<td>item 5 </td>
-					<td>60 INR</td>
-				</tr>
-				<tr>
-					<td>item 6 </td>
-					<td>80 INR</td>
-				</tr>
+				<% for(var i=0;i<restaurant.menu.length;i++) { %>
+					<tr>
+						<td><%= restaurant.menu[i][0] %></td>
+						<td><%= restaurant.menu[i][1] %></td>
+					</tr>
+				<% } %>
 
 			  </table>
-			</div>
-			<div class="modal-body">
-				
 			</div>
 			<div class="modal-footer">
 			  <button type="submit" class="btn btn-default btn-default pull-left" data-dismiss="modal"><span class="glyphicon glyphicon-remove"></span> Cancel</button>
@@ -196,32 +221,79 @@
 
 			<li class="find_rest"><a href = "/findRestaurant"  style="color:white">Find Restaurants</a></li>
 		  </ul>
-		  <ul class = "nav navbar-nav navbar-right">
-				<li class="find_rest"><a style="color:white;cursor: pointer;" data-toggle="modal" data-target="#myModal">Log In<span class="glyphicon glyphicon-user"></span></a></li>
-		  </ul>
+		  <% if(!registered){ %>
+			  <ul class = "nav navbar-nav navbar-right">
+					<li class="find_rest"><a style="color:white;cursor: pointer;" data-toggle="modal" data-target="#myModal">Log In<span class="glyphicon glyphicon-user"></span></a></li>
+			  </ul>
+		  <% }else{ %>
+				<ul class = "nav navbar-nav navbar-right">
+					<li class="find_rest"><a style="color:white;cursor: pointer;" href="/logout">Log Out<span class="glyphicon glyphicon-user"></span></a></li>
+			  </ul
+		  <% } %>
 	   </div>
    
 	</nav>
 	
 	<div class="row">
  		<div class="col-md-6" style="background-color:#dd1021;height:75vh">
-			<h1> The Taj Hotel</h1>
+			<h1><%= restaurant.name %></h1>
 			<div class="row">
 				<div class="col-md-6">
-					<img style="width:100%;height:50vh;" src="https://upload.wikimedia.org/wikipedia/commons/thumb/7/72/The_TajMahal_Palace_Hotel.jpg/1200px-The_TajMahal_Palace_Hotel.jpg" />
+					<img style="width:100%;height:50vh;" src="<%= restaurant.image %>" />
 				</div>
 				<div class="col-md-6">
 					<h3>Average Rating</h3>
-					<h4>8.0/10.0</h4>
+					<h4><%= averageRating %>/5.0</h4>
 					<h3>Type:</h3>
-					<h4>Luxury</h4>
+					<h4><%= restaurant.type %></h4>
 					<button class="btn btn-info" data-toggle="modal" data-target="#menu">Show Menu</button>
 				</div>
 			</div>
 		</div>
 		<div id="map" class="col-md-6" style="height:75vh;"></div>
 	</div>
+	<div class="ratings" style = "margin-left:5%">
+		<% if(registered && !alreadyRated) { %>
+			<div class="row ">
+				<button class="btn btn-primary" data-toggle="modal" data-target="#rate">Rate your experience</button>
+			</div>
+		<% } else if(alreadyRated){  %>
+			<div class="row " style="background-color:blue">
+				You have already rated this restaurant
+			</div>
+		<% }else { %>
+			<div class="row " style="background-color:blue">
+				You need to login to rate
+			</div>
+		<% } %>
+		<% for(var i=0;i<restaurant.rating.length;i++){ %>
+			<div class="row rating">
+				<h5><%= restaurant.rating[i][2] %> </h5> <h4>Rating : <%= restaurant.rating[i][1] %> / 5</h4></h5>- <%= restaurant.rating[i][0] %> </h5>
+			</div>
+		<% } %>
+		<div class="row rating">
+			<h5>The service is good </h5> <h4>Rating : 4/10</h4></h5>-Crespoter</h5>
+		</div>
+
+	</div>
     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAN4aYfGdzcAtSTNQ3ccx0Wf7iyzuIhXeA&libraries=places&callback=initMap" async defer></script>
 	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+	<script>
+		function setRating(rating)
+		{
+			var stars = ["stars-1","stars-2","stars-3","stars-4","stars-5"];
+			for(var i=0;i<rating;i++)
+			{
+				$("."+stars[i]).removeClass("unchecked");
+				$("."+stars[i]).addClass("checked");
+			}
+			for(var i=rating;i<5;i++)
+			{
+				$("."+stars[i]).addClass("unchecked");
+				$("."+stars[i]).removeClass("checked");
+			}
+			$(".rating-input-hidden").val(rating);
+		}
+	</script>
   </body>
 </html>

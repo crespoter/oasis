@@ -41,9 +41,55 @@
 		{
 			background: url("http://www.terrapatria.org/p/2018/02/restaurant-background-restaurant-background-template-vector-free-in-food-menu-background-hd.jpg");
 		}
+		#snackbar {
+			visibility: hidden; 
+			min-width: 250px; 
+			margin-left: -125px;
+			background-color: #333; 
+			color: #fff; 
+			text-align: center;
+			border-radius: 2px; 
+			padding: 16px;
+			position: fixed; 
+			z-index: 1; 
+			left: 50%;
+			bottom: 30px;
+		}
+
+		#snackbar.show {
+			visibility: visible;
+
+
+			-webkit-animation: fadein 0.5s, fadeout 0.5s 2.5s;
+			animation: fadein 0.5s, fadeout 0.5s 2.5s;
+		}
+
+
+		@-webkit-keyframes fadein {
+			from {bottom: 0; opacity: 0;}
+			to {bottom: 30px; opacity: 1;}
+		}
+
+		@keyframes fadein {
+			from {bottom: 0; opacity: 0;}
+			to {bottom: 30px; opacity: 1;}
+		}
+
+		@-webkit-keyframes fadeout {
+			from {bottom: 30px; opacity: 1;}
+			to {bottom: 0; opacity: 0;}
+		}
+
+		@keyframes fadeout {
+			from {bottom: 30px; opacity: 1;}
+			to {bottom: 0; opacity: 0;}
+		}
 	</style>
 </head>
 <body>
+	<div id="snackbar">Some text some message..</div>
+
+
 	<div class="modal fade" id="myModal" role="dialog">
 		<div class="modal-dialog">
 		  <div class="modal-content">
@@ -59,7 +105,7 @@
 				</div>
 				<div class="form-group">
 				  <label for="password"><span class="glyphicon glyphicon-eye-open"></span>Password</label>
-				  <input type="text" class="form-control" id="password" placeholder="Enter Password" name="password">
+				  <input type="password" class="form-control" id="password" placeholder="Enter Password" name="password">
 				</div>
 				<button type="submit" class="btn btn-default btn-success btn-block"><span class="glyphicon glyphicon-off"></span> Login </button>
 			  </form>
@@ -90,9 +136,15 @@
 
 			<li class="find_rest"><a href = "/findRestaurant"  style="color:white">Find Restaurants</a></li>
 		  </ul>
-		  <ul class = "nav navbar-nav navbar-right">
-				<li class="find_rest"><a style="color:white;cursor: pointer;" data-toggle="modal" data-target="#myModal">Log In<span class="glyphicon glyphicon-user"></span></a></li>
-		  </ul>
+		  <% if(!registered){ %>
+			  <ul class = "nav navbar-nav navbar-right">
+					<li class="find_rest"><a style="color:white;cursor: pointer;" data-toggle="modal" data-target="#myModal">Log In<span class="glyphicon glyphicon-user"></span></a></li>
+			  </ul>
+		  <% }else{ %>
+				<ul class = "nav navbar-nav navbar-right">
+					<li class="find_rest"><a style="color:white;cursor: pointer;" href="/logout">Log Out<span class="glyphicon glyphicon-user"></span></a></li>
+			  </ul
+		  <% } %>
 	   </div>
    
 	</nav>
@@ -143,5 +195,26 @@
 </div>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+<script>
+	var getUrlParameter = function getUrlParameter(sParam) {
+		var sPageURL = decodeURIComponent(window.location.search.substring(1)), sURLVariables = sPageURL.split('&'),sParameterName,i;
+		for (i = 0; i < sURLVariables.length; i++) {
+			sParameterName = sURLVariables[i].split('=');
+			if (sParameterName[0] === sParam) {
+				return sParameterName[1] === undefined ? true : sParameterName[1];
+			}
+		}
+	};
+	$(document).ready(function(){
+		var message = getUrlParameter('message');
+		if(message.length > 0)
+		{
+			var x = document.getElementById("snackbar");
+			x.className = "show";
+			$("#snackbar").text(message);
+			setTimeout(function(){ x.className = x.className.replace("show", ""); }, 3000);
+		}
+	});
+</script>
 </body>
 </html>

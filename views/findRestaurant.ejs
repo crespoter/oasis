@@ -5,6 +5,7 @@
     <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
     <meta charset="utf-8">
 	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 	<style>
 		@import url('https://fonts.googleapis.com/css?family=Dancing+Script');
 		@import url('https://fonts.googleapis.com/css?family=Bitter');
@@ -60,28 +61,35 @@
 			background-color:white;
 			color:#dd1021;
 		}
+		.hidden
+		{
+			display:hidden;
+		}
+		.city-select
+		{
+			cursor:pointer;
+		}
+		.filter-select
+		{
+			cursor:pointer;
+		}
 	</style>
    	<script
 			  src="https://code.jquery.com/jquery-3.3.1.js"
 			  integrity="sha256-2Kok7MbOyxpgUVvAk/HJ2jigOSYS2auK4Pfzbm7uH60="
 			  crossorigin="anonymous"></script>
     <script>
-      var map;
+	  var map;
       var infowindow;
       function initMap() {
         var pyrmont = {lat: 42.375, lng: -71.1};
         map = new google.maps.Map(document.getElementById('map'), {
           center: pyrmont,
-          zoom: 15
+          zoom: 12
         });
 
         infowindow = new google.maps.InfoWindow();
-		
-		/*$.getJSON('/api/getallshops',(data)=>{
-			data.forEach(function(element){
-				createMarker({lat:parseFloat(element.lat),lng:parseFloat(element.lon)},element.name);
-			});
-		});*/
+
 
 	  }
 	  
@@ -114,7 +122,7 @@
 				</div>
 				<div class="form-group">
 				  <label for="password"><span class="glyphicon glyphicon-eye-open"></span>Password</label>
-				  <input type="text" class="form-control" id="password" placeholder="Enter Password" name="password">
+				  <input type="password" class="form-control" id="password" placeholder="Enter Password" name="password">
 				</div>
 				<button type="submit" class="btn btn-default btn-success btn-block"><span class="glyphicon glyphicon-off"></span> Login </button>
 			  </form>
@@ -147,116 +155,173 @@
 
 			<li class="active active_crespoter"><a href = "/findRestaurant"  style="background-color:white;color:#dd1021">Find Restaurants</a></li>
 		  </ul>
-		  <ul class = "nav navbar-nav navbar-right">
-				<li class="find_rest"><a style="color:white;cursor: pointer;" data-toggle="modal" data-target="#myModal">Log In<span class="glyphicon glyphicon-user"></span></a></li>
-		  </ul>
+		   <% if(!registered){ %>
+			  <ul class = "nav navbar-nav navbar-right">
+					<li class="find_rest"><a style="color:white;cursor: pointer;" data-toggle="modal" data-target="#myModal">Log In<span class="glyphicon glyphicon-user"></span></a></li>
+			  </ul>
+		  <% }else{ %>
+				<ul class = "nav navbar-nav navbar-right">
+					<li class="find_rest"><a style="color:white;cursor: pointer;" href="/logout">Log Out<span class="glyphicon glyphicon-user"></span></a></li>
+			  </ul
+		  <% } %>
 	   </div>
    
 	</nav>
 	
 	<div class="row">
  		<div id="filter" class="col-md-3">
-			<table class="table table-bordered table-responsive" style=";margin-top:10%;background-color:#dd1021">
+			<table class="table table-bordered table-responsive city-table" style=";margin-top:10%;background-color:#dd1021">
+				
+					
 				<tr>
 					<th>Select your City:</th>
 				</tr>
-				<tr>
-					<td>Chennai</td>
-				</tr>
-				<tr>
-					<td>Bangalore</td>
-				</tr>
-				<tr>
-					<td>Coimbatore</td>
-				</tr>
-				<tr>
-					<td>Hyderabad</td>
-				</tr>
-				<tr>
-					<td>Trichy</td>
-				</tr>
+				<% for(var i=0;i<cities.length;i++) { %>
+					<tr>
+						<td class="city-select"><%= cities[i].name %></td>
+					</tr>				
+				<% } %>
 			</table>
 			<br />
 			<table class="table table-bordered table-responsive" style=";background-color:#dd1021">
 				<tr>
 					<th>Filter:</th>
 				</tr>
-				<tr class="selected">
-					<td>None</td>
+				<tr>
+					<td class="filter-select selected">None</td>
 				</tr>
 				<tr>
-					<td>Classic</td>
+					<td class="filter-select">Classic</td>
 				</tr>
 				<tr>
-					<td>Fast Food</td>
+					<td class="filter-select">Fast Food</td>
 				</tr>
 				<tr>
-					<td>Regional Specials</td>
+					<td class="filter-select">Regional Specials</td>
 				</tr>
 				<tr>
-					<td>Luxury</td>
+					<td class="filter-select">Luxury</td>
 				</tr>
 			</table>
 		</div>
-		<div class="search col-md-2">
-			<form>
-				<input type="search" class="form-control" placeholder="Search..." style="margin-top:10%"/>
-			</form>
-			<table class = "table table-responsive" style="height:60vh;overflow-y:scroll;display:block;background-color:#dd1021;">
-					
-				<tr>
-					<td><a href="/restaurant?id=1" style="text-decoration:none;color:white;">The Taj Hotel</a></td>
-				</tr>
-				<tr>
-					<td>The Oberon hotel</td>
-				</tr>
-				<tr>
-					<td>Hotel 3</td>
-				</tr>
-				<tr>
-					<td>Hotel 4</td>
-				</tr>
-				<tr>
-					<td>Hotel 5</td>
-				</tr>
-				<tr>
-					<td>Hotel 6</td>
-				</tr>
-				<tr>
-					<td>Hotel 7</td>
-				</tr>
-				<tr>
-					<td>Hotel 8</td>
-				</tr>
-				<tr>
-					<td>Hotel 9</td>
-				</tr>
-				<tr>
-					<td>Hotel 10</td>
-				</tr>
-				<tr>
-					<td>Hotel 11</td>
-				</tr>
-				<tr>
-					<td>Hotel 12</td>
-				</tr>
-				<tr>
-					<td>Hotel 13</td>
-				</tr>
-				<tr>
-					<td>Hotel 14</td>
-				</tr>
-				<tr>
-					<td>Hotel 15</td>
-				</tr>
-				<tr>
-					<td>Hotel 16</td>
-				</tr>
+		<div class="search col-md-2 hidden">
+
+				<input type="search" class="form-control search-input" placeholder="Search..." style="margin-top:10%"/>
+			<table class = "table table-responsive table-restaurants" style="height:60vh;overflow-y:scroll;display:block;background-color:#dd1021;">	
 			</table>
 		</div>
-		<div id="map" class="col-md-6" style="height:75vh;"></div>
+		<div id="map" class="col-md-6 hidden" style="height:75vh;"></div>
 	</div>
-    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAN4aYfGdzcAtSTNQ3ccx0Wf7iyzuIhXeA&libraries=places&callback=initMap" async defer></script>
+	<i class="fa fa-spinner fa-spin spinner hidden" style="font-size:6em;margin-left:20%;color:red"></i>
+
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAN4aYfGdzcAtSTNQ3ccx0Wf7iyzuIhXeA&libraries=places&callback=initMap"  defer></script>
 	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+	<script>
+
+	$(document).ready(function(){
+        var infowindow = new google.maps.InfoWindow();
+		
+		var markers = [];
+
+		function createMarker(location,name) {
+			var placeLoc = location;
+			var marker = new google.maps.Marker({
+			  map: map,
+			  position: location
+			});
+			google.maps.event.addListener(marker, 'click', function() {
+			  infowindow.setContent("<p style='color:black'>" + name + "</p>");
+			  infowindow.open(map, this);
+			});
+			markers.push(marker);
+		}
+
+		var type = "None";
+		var city = "";
+		var searchString = "";
+		$(".city-select").click(function(){
+			$(".spinner").removeClass("hidden");
+			for(var i=0;i<markers.length;i++)
+			{
+				markers[i].setMap(null);
+				
+			}
+			markers = [];
+			$(".hidden").removeClass("hidden");
+			$(".city-select").removeClass("selected");
+			$(this).addClass("selected");
+			city = $(this).text();
+			$.getJSON("/api/findCity?city="+city,function(data){
+				map.setCenter({"lat": parseFloat(data.lat) ,"lng": parseFloat(data.lng)});
+				var parameters = {city:city,type:type};
+				if(searchString.length > 0)
+					parameters.search = searchString;
+				$.getJSON("/api/findrestaurants",parameters,(data)=>{
+					$(".table-restaurants tr").remove();
+					for(var i=0;i<data.length;i++)
+					{
+						$('.table-restaurants').append('<tr><td><a href="/restaurant?id='+data[i]["_id"]+'" style="text-decoration:none;color:white;">'+data[i].name + '</a></td></tr>');
+						createMarker( {lat: parseFloat(data[i].lat),lng : parseFloat(data[i].lng)},data[i].name);
+					}
+					$(".spinner").addClass("hidden");
+				});
+			});
+		});
+
+		$(".filter-select").click(function(){
+			
+			for(var i=0;i<markers.length;i++)
+			{
+				markers[i].setMap(null);
+			}
+			markers = [];
+			$(".filter-select").removeClass("selected");
+			$(this).addClass("selected");
+			type = $(this).text();
+			
+			if(city.length > 0)
+			{
+				$(".spinner").removeClass("hidden");
+				var parameters = {city:city,type:type};
+				if(searchString.length > 0)
+					parameters.search = searchString;
+				$.getJSON("/api/findrestaurants",parameters,(data)=>{
+					$(".table-restaurants tr").remove();
+					for(var i=0;i<data.length;i++)
+					{
+						$('.table-restaurants').append('<tr><td><a href="/restaurant?id='+data[i]["_id"]+'" style="text-decoration:none;color:white;">'+data[i].name + '</a></td></tr>');
+						createMarker( {lat: parseFloat(data[i].lat),lng : parseFloat(data[i].lng)},data[i].name);
+					}
+					$(".spinner").addClass("hidden");
+				});
+			}
+		});
+		$(".search-input").keyup(function(){
+			$(".spinner").removeClass("hidden");
+			for(var i=0;i<markers.length;i++)
+			{
+				markers[i].setMap(null);
+			}
+			markers = [];
+			searchString = $(this).val();
+			console.log(searchString);
+			if(city.length > 0)
+			{
+				var parameters = {city:city,type:type};
+				if(searchString.length > 0)
+					parameters.search = searchString;
+				$.getJSON("/api/findrestaurants",parameters,(data)=>{
+					$(".spinner").addClass("hidden");
+					$(".table-restaurants tr").remove();
+					for(var i=0;i<data.length;i++)
+					{
+						$('.table-restaurants').append('<tr><td><a href="/restaurant?id='+data[i]["_id"]+'" style="text-decoration:none;color:white;">'+data[i].name + '</a></td></tr>');
+						createMarker( {lat: parseFloat(data[i].lat),lng : parseFloat(data[i].lng)},data[i].name);
+					}
+				});
+			}
+		});
+	});
+	</script>
   </body>
 </html>
